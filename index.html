@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Окрасы — Сайт окрасов</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Onest:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #12121a;
+    --bg3: #1a1a26;
+    --border: rgba(120,100,255,0.18);
+    --border2: rgba(120,100,255,0.35);
+    --accent: #8b5cf6;
+    --accent2: #a78bfa;
+    --accent-glow: rgba(139,92,246,0.25);
+    --text: #f0eeff;
+    --text2: #a89fc8;
+    --text3: #6b6485;
+    --success: #34d399;
+    --danger: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Onest', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- NOISE OVERLAY ---- */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2.5rem;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+  .logo {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .logo span { color: var(--accent2); }
+  nav .links { display: flex; gap: 0.5rem; }
+  nav button {
+    background: transparent;
+    border: 0.5px solid transparent;
+    color: var(--text2);
+    font-family: 'Onest', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  nav button:hover { color: var(--text); border-color: var(--border); background: var(--bg2); }
+  nav button.active { color: var(--accent2); border-color: var(--border2); background: rgba(139,92,246,0.08); }
+  .dev-btn {
+    font-size: 0.75rem !important;
+    color: var(--text3) !important;
+    padding: 0.4rem 0.75rem !important;
+  }
+  .dev-btn:hover { color: var(--text2) !important; }
+
+  /* ---- PAGES ---- */
+  .page { display: none; position: relative; z-index: 1; }
+  .page.active { display: block; }
+
+  /* ---- HOME ---- */
+  .hero {
+    padding: 6rem 2.5rem 3rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    background: rgba(139,92,246,0.1);
+    border: 0.5px solid var(--border2);
+    padding: 0.3rem 0.75rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent2); }
+  .hero p {
+    font-size: 1.05rem;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+  }
+  .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-family: 'Onest', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.75rem 1.75rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text2);
+    border: 0.5px solid var(--border);
+    font-family: 'Onest', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+    padding: 0.75rem 1.75rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--border2); color: var(--text); }
+
+  /* SEARCH */
+  .search-section {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 2.5rem 2rem;
+  }
+  .search-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 0 1rem;
+    transition: border-color 0.2s;
+  }
+  .search-wrap:focus-within { border-color: var(--accent); }
+  .search-wrap svg { flex-shrink: 0; color: var(--text3); }
+  .search-wrap input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Onest', sans-serif;
+    font-size: 0.95rem;
+    padding: 0.875rem 0.75rem;
+  }
+  .search-wrap input::placeholder { color: var(--text3); }
+
+  /* SKINS GRID */
+  .skins-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem 2.5rem 5rem;
+  }
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 1.25rem;
+  }
+  .skins-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    border: 0.5px solid var(--border);
+  }
+  .skin-card {
+    background: var(--bg2);
+    padding: 1.25rem;
+    transition: background 0.2s;
+  }
+  .skin-card:hover { background: var(--bg3); }
+  .skin-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%);
+    margin-bottom: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    opacity: 0.85;
+  }
+  .skin-name {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .skin-author {
+    font-size: 0.75rem;
+    color: var(--text3);
+    margin-bottom: 0.625rem;
+  }
+  .skin-desc {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .skin-status {
+    display: inline-block;
+    margin-top: 0.625rem;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 100px;
+  }
+  .status-approved { background: rgba(52,211,153,0.1); color: #34d399; }
+  .status-pending { background: rgba(251,191,36,0.1); color: #fbbf24; }
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text3);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    grid-column: 1 / -1;
+  }
+  .empty-state .big { font-size: 2rem; margin-bottom: 0.75rem; }
+
+  /* ---- SUBMIT FORM ---- */
+  .form-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 4rem 2.5rem 5rem;
+  }
+  .form-heading {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+  .form-sub {
+    font-size: 0.9rem;
+    color: var(--text2);
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+  }
+  .field { margin-bottom: 1.5rem; }
+  .field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .field label span { color: var(--accent); margin-left: 2px; }
+  .field input, .field textarea {
+    width: 100%;
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Onest', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    padding: 0.875rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  .field input:focus, .field textarea:focus { border-color: var(--accent); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--text3); }
+  .field textarea { min-height: 100px; line-height: 1.6; }
+  .field-hint { font-size: 0.75rem; color: var(--text3); margin-top: 0.375rem; }
+
+  .file-upload {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px dashed var(--border2);
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .file-upload:hover { background: var(--bg3); border-color: var(--accent); }
+  .file-upload input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .file-upload-icon { font-size: 1.75rem; margin-bottom: 0.5rem; }
+  .file-upload-text { font-size: 0.85rem; color: var(--text2); }
+  .file-upload-text strong { color: var(--accent2); font-weight: 500; }
+  .file-name-display {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--success);
+    display: none;
+  }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s;
+    margin-top: 0.5rem;
+  }
+  .submit-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+  .submit-btn:active { transform: translateY(0); }
+
+  .success-banner {
+    display: none;
+    background: rgba(52,211,153,0.08);
+    border: 0.5px solid rgba(52,211,153,0.3);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    color: var(--success);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  /* ---- DEV PAGE ---- */
+  .dev-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2.5rem 5rem;
+  }
+  .lock-screen {
+    max-width: 400px;
+    margin: 4rem auto 0;
+    text-align: center;
+  }
+  .lock-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+  }
+  .lock-screen h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .lock-screen p {
+    font-size: 0.85rem;
+    color: var(--text3);
+    margin-bottom: 1.75rem;
+  }
+  .lock-field {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .lock-field input {
+    flex: 1;
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Onest', sans-serif;
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    letter-spacing: 0.15em;
+  }
+  .lock-field input:focus { border-color: var(--accent); }
+  .lock-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-family: 'Onest', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .lock-btn:hover { background: var(--accent2); }
+  .lock-error {
+    font-size: 0.8rem;
+    color: var(--danger);
+    display: none;
+  }
+
+  /* DEV DASHBOARD */
+  .dev-dashboard { display: none; }
+  .dev-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  .dev-header h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .dev-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 0.375rem;
+  }
+  .stat-val {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .submissions-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .submission-card {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.125rem 1.25rem;
+    transition: border-color 0.2s;
+  }
+  .submission-card:hover { border-color: var(--border2); }
+  .sub-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.625rem;
+  }
+  .sub-name {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+  .sub-meta { font-size: 0.75rem; color: var(--text3); }
+  .sub-meta span { color: var(--text2); }
+  .sub-desc {
+    font-size: 0.82rem;
+    color: var(--text2);
+    line-height: 1.55;
+    margin-bottom: 0.875rem;
+  }
+  .sub-actions { display: flex; gap: 0.5rem; }
+  .approve-btn, .reject-btn, .delete-btn {
+    font-family: 'Onest', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.35rem 0.875rem;
+    border-radius: 7px;
+    border: 0.5px solid;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .approve-btn {
+    background: rgba(52,211,153,0.08);
+    border-color: rgba(52,211,153,0.3);
+    color: var(--success);
+  }
+  .approve-btn:hover { background: rgba(52,211,153,0.18); }
+  .reject-btn {
+    background: rgba(251,191,36,0.08);
+    border-color: rgba(251,191,36,0.25);
+    color: #fbbf24;
+  }
+  .reject-btn:hover { background: rgba(251,191,36,0.18); }
+  .delete-btn {
+    background: rgba(248,113,113,0.06);
+    border-color: rgba(248,113,113,0.2);
+    color: var(--danger);
+  }
+  .delete-btn:hover { background: rgba(248,113,113,0.15); }
+  .sub-file-link {
+    font-size: 0.75rem;
+    color: var(--accent2);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 0.875rem;
+  }
+  .sub-file-link:hover { text-decoration: underline; }
+  .no-subs {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text3);
+    font-size: 0.875rem;
+  }
+  .logout-btn {
+    font-family: 'Onest', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text3);
+    background: transparent;
+    border: 0.5px solid var(--border);
+    padding: 0.4rem 0.875rem;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .logout-btn:hover { color: var(--danger); border-color: rgba(248,113,113,0.3); }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.75rem;
+    color: var(--text3);
+    border-top: 0.5px solid var(--border);
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.25rem; }
+    .hero, .search-section, .skins-section, .form-page, .dev-page { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .dev-stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Окрас<span>.</span></div>
+  <div class="links">
+    <button onclick="showPage('home')" class="active" id="nav-home">Каталог</button>
+    <button onclick="showPage('submit')" id="nav-submit">Подать окрас</button>
+    <button onclick="showPage('dev')" id="nav-dev" class="dev-btn">⚙ Dev</button>
+  </div>
+</nav>
+
+<!-- ======== HOME ======== -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-tag">Открытый каталог</div>
+    <h1>Каталог<br><em>окрасов</em></h1>
+    <p>Здесь собраны пользовательские окрасы. Хочешь добавить свой — заполни форму и он появится на сайте после проверки.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="showPage('submit')">Добавить окрас</button>
+      <button class="btn-secondary" onclick="document.querySelector('.search-section input').focus(); document.querySelector('.search-section').scrollIntoView({behavior:'smooth'})">Найти окрас</button>
+    </div>
+  </div>
+
+  <div class="search-section">
+    <div class="search-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="Поиск по названию окраса..." oninput="filterSkins()">
+    </div>
+  </div>
+
+  <div class="skins-section">
+    <div class="section-label">Все окрасы</div>
+    <div class="skins-grid" id="skins-grid">
+      <div class="empty-state">
+        <div class="big">🎨</div>
+        <div>Окрасов пока нет.<br>Стань первым — <strong onclick="showPage('submit')" style="color:var(--accent2);cursor:pointer">подай заявку</strong>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== SUBMIT FORM ======== -->
+<div class="page" id="page-submit">
+  <div class="form-page">
+    <h2 class="form-heading">Подать окрас</h2>
+    <p class="form-sub">Заполни форму — мы проверим и добавим твой окрас в каталог.</p>
+
+    <div class="success-banner" id="success-banner">
+      ✓ Заявка отправлена! Твой окрас появится в каталоге после проверки разработчиком.
+    </div>
+
+    <div class="field">
+      <label>Никнейм <span>*</span></label>
+      <input type="text" id="f-nick" placeholder="Твой ник в игре" maxlength="40">
+    </div>
+
+    <div class="field">
+      <label>E-mail <span>*</span></label>
+      <input type="email" id="f-email" placeholder="твоя@почта.ru">
+      <div class="field-hint">Только для связи, не публикуется</div>
+    </div>
+
+    <div class="field">
+      <label>Название окраса <span>*</span></label>
+      <input type="text" id="f-name" placeholder="Как называется твой окрас?" maxlength="60">
+    </div>
+
+    <div class="field">
+      <label>Описание</label>
+      <textarea id="f-desc" placeholder="Расскажи о своём окрасе: для чего он, особенности, вдохновение..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Файл окраса <span>*</span></label>
+      <div class="file-upload" id="file-upload-area">
+        <input type="file" id="f-file" onchange="handleFile(this)" accept=".png,.zip,.rar,.7z,.dds,.tga">
+        <div class="file-upload-icon">📁</div>
+        <div class="file-upload-text"><strong>Выбери файл</strong> или перетащи сюда</div>
+        <div class="file-upload-text" style="font-size:0.75rem; color:var(--text3); margin-top:0.25rem">PNG, ZIP, RAR, 7Z, DDS, TGA</div>
+        <div class="file-name-display" id="file-name-display"></div>
+      </div>
+    </div>
+
+    <button class="submit-btn" onclick="submitSkin()">Отправить заявку →</button>
+  </div>
+</div>
+
+<!-- ======== DEV PAGE ======== -->
+<div class="page" id="page-dev">
+  <div class="dev-page">
+
+    <!-- LOCK -->
+    <div class="lock-screen" id="lock-screen">
+      <div class="lock-icon">🔐</div>
+      <h2>Страница разработчика</h2>
+      <p>Введи пароль для доступа к панели управления</p>
+      <div class="lock-field">
+        <input type="password" id="dev-pass" placeholder="Пароль" onkeydown="if(event.key==='Enter')devLogin()">
+        <button class="lock-btn" onclick="devLogin()">Войти</button>
+      </div>
+      <div class="lock-error" id="lock-error">Неверный пароль</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dev-dashboard" id="dev-dashboard">
+      <div class="dev-header">
+        <h2>Панель разработчика</h2>
+        <button class="logout-btn" onclick="devLogout()">Выйти</button>
+      </div>
+
+      <div class="dev-stats">
+        <div class="stat-card">
+          <div class="stat-label">Всего заявок</div>
+          <div class="stat-val" id="stat-total">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">На проверке</div>
+          <div class="stat-val" id="stat-pending">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Одобрено</div>
+          <div class="stat-val" id="stat-approved">0</div>
+        </div>
+      </div>
+
+      <div class="section-label">Входящие заявки</div>
+      <div class="submissions-list" id="submissions-list">
+        <div class="no-subs">Заявок пока нет</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>© 2024 Окрас. Сайт для любителей окрасов.</footer>
+
+<script>
+const DEV_PASSWORD = 'dev2024';
+
+let skins = JSON.parse(localStorage.getItem('skins') || '[]');
+let submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
+let devLoggedIn = false;
+
+function save() {
+  localStorage.setItem('skins', JSON.stringify(skins));
+  localStorage.setItem('submissions', JSON.stringify(submissions));
+}
+
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  document.getElementById('nav-' + p).classList.add('active');
+  if (p === 'home') renderSkins(skins.filter(s => s.status === 'approved'));
+  if (p === 'dev' && devLoggedIn) renderDashboard();
+}
+
+function filterSkins() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = skins.filter(s => s.status === 'approved' && s.name.toLowerCase().includes(q));
+  renderSkins(filtered);
+}
+
+function renderSkins(list) {
+  const grid = document.getElementById('skins-grid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="big">🎨</div><div>Ничего не найдено.<br><strong onclick="showPage(\'submit\')" style="color:var(--accent2);cursor:pointer">Добавь первый окрас!</strong></div></div>';
+    return;
+  }
+  const emojis = ['🚂','🚃','🚄','🚅','🚆','🚇','🚈','🚉','🚊','🚝'];
+  grid.innerHTML = list.map((s, i) => `
+    <div class="skin-card">
+      <div class="skin-avatar">${emojis[i % emojis.length]}</div>
+      <div class="skin-name">${esc(s.name)}</div>
+      <div class="skin-author">by ${esc(s.nick)}</div>
+      <div class="skin-desc">${esc(s.desc || 'Описание не указано')}</div>
+      <span class="skin-status status-approved">Одобрен</span>
+    </div>
+  `).join('');
+}
+
+function handleFile(input) {
+  const disp = document.getElementById('file-name-display');
+  if (input.files[0]) {
+    disp.textContent = '✓ ' + input.files[0].name;
+    disp.style.display = 'block';
+  }
+}
+
+function submitSkin() {
+  const nick = document.getElementById('f-nick').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const name = document.getElementById('f-name').value.trim();
+  const desc = document.getElementById('f-desc').value.trim();
+  const file = document.getElementById('f-file').files[0];
+
+  if (!nick || !email || !name) {
+    alert('Заполни все обязательные поля (никнейм, почту и название окраса)');
+    return;
+  }
+  if (!email.includes('@')) {
+    alert('Введи корректный e-mail');
+    return;
+  }
+  if (!file) {
+    alert('Прикрепи файл окраса');
+    return;
+  }
+
+  const entry = {
+    id: Date.now(),
+    nick, email, name, desc,
+    fileName: file.name,
+    status: 'pending',
+    date: new Date().toLocaleDateString('ru-RU')
+  };
+  submissions.push(entry);
+  save();
+
+  document.getElementById('success-banner').style.display = 'block';
+  document.getElementById('f-nick').value = '';
+  document.getElementById('f-email').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-desc').value = '';
+  document.getElementById('f-file').value = '';
+  document.getElementById('file-name-display').style.display = 'none';
+
+  setTimeout(() => document.getElementById('success-banner').style.display = 'none', 5000);
+}
+
+function devLogin() {
+  const pass = document.getElementById('dev-pass').value;
+  if (pass === DEV_PASSWORD) {
+    devLoggedIn = true;
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('dev-dashboard').style.display = 'block';
+    renderDashboard();
+  } else {
+    document.getElementById('lock-error').style.display = 'block';
+    document.getElementById('dev-pass').value = '';
+    setTimeout(() => document.getElementById('lock-error').style.display = 'none', 2500);
+  }
+}
+
+function devLogout() {
+  devLoggedIn = false;
+  document.getElementById('lock-screen').style.display = 'block';
+  document.getElementById('dev-dashboard').style.display = 'none';
+  document.getElementById('dev-pass').value = '';
+}
+
+function renderDashboard() {
+  document.getElementById('stat-total').textContent = submissions.length;
+  document.getElementById('stat-pending').textContent = submissions.filter(s => s.status === 'pending').length;
+  document.getElementById('stat-approved').textContent = submissions.filter(s => s.status === 'approved').length;
+
+  const list = document.getElementById('submissions-list');
+  if (!submissions.length) {
+    list.innerHTML = '<div class="no-subs">Заявок пока нет</div>';
+    return;
+  }
+
+  list.innerHTML = [...submissions].reverse().map(s => `
+    <div class="submission-card" id="sub-${s.id}">
+      <div class="sub-top">
+        <div>
+          <div class="sub-name">${esc(s.name)}</div>
+          <div class="sub-meta">от <span>${esc(s.nick)}</span> · <span>${esc(s.email)}</span> · ${s.date}</div>
+        </div>
+        <span class="skin-status ${s.status === 'approved' ? 'status-approved' : 'status-pending'}">${s.status === 'approved' ? 'Одобрен' : 'Ожидает'}</span>
+      </div>
+      <div class="sub-desc">${esc(s.desc || '—')}</div>
+      ${s.fileName ? `<div><a class="sub-file-link" href="#">📎 ${esc(s.fileName)}</a></div>` : ''}
+      <div class="sub-actions">
+        ${s.status !== 'approved' ? `<button class="approve-btn" onclick="approveSubmission(${s.id})">Одобрить</button>` : ''}
+        ${s.status === 'approved' ? `<button class="reject-btn" onclick="rejectSubmission(${s.id})">Убрать</button>` : ''}
+        <button class="delete-btn" onclick="deleteSubmission(${s.id})">Удалить</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function approveSubmission(id) {
+  const sub = submissions.find(s => s.id === id);
+  if (!sub) return;
+  sub.status = 'approved';
+  skins.push({ ...sub });
+  save();
+  renderDashboard();
+}
+
+function rejectSubmission(id) {
+  const sub = submissions.find(s => s.id === id);
+  if (!sub) return;
+  sub.status = 'pending';
+  skins = skins.filter(s => s.id !== id);
+  save();
+  renderDashboard();
+}
+
+function deleteSubmission(id) {
+  if (!confirm('Удалить заявку?')) return;
+  submissions = submissions.filter(s => s.id !== id);
+  skins = skins.filter(s => s.id !== id);
+  save();
+  renderDashboard();
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+renderSkins(skins.filter(s => s.status === 'approved'));
+</script>
+</body>
+</html>
