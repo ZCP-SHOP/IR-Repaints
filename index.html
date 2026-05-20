@@ -592,7 +592,6 @@
     .dev-stats { grid-template-columns: 1fr 1fr; }
   }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
 
@@ -731,19 +730,10 @@
 <footer>© 2026 IR Repaints. Сайт для любителей окрасов.</footer>
 
 <script>
-const SUPABASE_URL = 'https://efheabxcyzrybufvkxey.supabase.co';
-
-const SUPABASE_KEY = 'sb_publishable_xqrkSwvyTjhNfAEnrRlhAA_e9-9J1CY';
-
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
 const DEV_PASSWORD = 'dev2024';
 
-let skins = [];
-let submissions = [];
+let skins = JSON.parse(localStorage.getItem('skins') || '[]');
+let submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
 let devLoggedIn = false;
 
 function save() {
@@ -914,19 +904,8 @@ function deleteSubmission(id) {
 function esc(str) {
   return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-loadSkins();
 
-async function loadSkins() {
-  const { data } = await supabase
-    .from('skins')
-    .select('*');
-
-  submissions = data || [];
-
-  skins = submissions.filter(s => s.status === 'approved');
-
-  renderSkins(skins);
-}
+renderSkins(skins.filter(s => s.status === 'approved'));
 </script>
 </body>
 </html>
