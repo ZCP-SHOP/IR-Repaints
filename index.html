@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Окрасы — Сайт окрасов</title>
+<title>IR Repaints</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Onest:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -596,10 +596,10 @@
 <body>
 
 <nav>
-  <div class="logo">Окрас<span>.</span></div>
+  <div class="logo">IR <span>Repaints</span></div>
   <div class="links">
     <button onclick="showPage('home')" class="active" id="nav-home">Каталог</button>
-    <button onclick="showPage('submit')" id="nav-submit">Подать окрас</button>
+    <button onclick="showPage('submit')" id="nav-submit">Предложить окрас</button>
     <button onclick="showPage('dev')" id="nav-dev" class="dev-btn">⚙ Dev</button>
   </div>
 </nav>
@@ -611,7 +611,7 @@
     <h1>Каталог<br><em>окрасов</em></h1>
     <p>Здесь собраны пользовательские окрасы. Хочешь добавить свой — заполни форму и он появится на сайте после проверки.</p>
     <div class="hero-actions">
-      <button class="btn-primary" onclick="showPage('submit')">Добавить окрас</button>
+      <button class="btn-primary" onclick="showPage('submit')">Предложить окрас</button>
       <button class="btn-secondary" onclick="document.querySelector('.search-section input').focus(); document.querySelector('.search-section').scrollIntoView({behavior:'smooth'})">Найти окрас</button>
     </div>
   </div>
@@ -628,7 +628,7 @@
     <div class="skins-grid" id="skins-grid">
       <div class="empty-state">
         <div class="big">🎨</div>
-        <div>Окрасов пока нет.<br>Стань первым — <strong onclick="showPage('submit')" style="color:var(--accent2);cursor:pointer">подай заявку</strong>.</div>
+        <div>Окрасов пока нет.<br>Стань первым — <strong onclick="showPage('submit')" style="color:var(--accent2);cursor:pointer">предложи окрас</strong>.</div>
       </div>
     </div>
   </div>
@@ -637,7 +637,7 @@
 <!-- ======== SUBMIT FORM ======== -->
 <div class="page" id="page-submit">
   <div class="form-page">
-    <h2 class="form-heading">Подать окрас</h2>
+    <h2 class="form-heading">Предложить окрас</h2>
     <p class="form-sub">Заполни форму — мы проверим и добавим твой окрас в каталог.</p>
 
     <div class="success-banner" id="success-banner">
@@ -646,7 +646,7 @@
 
     <div class="field">
       <label>Никнейм <span>*</span></label>
-      <input type="text" id="f-nick" placeholder="Твой ник в игре" maxlength="40">
+      <input type="text" id="f-nick" placeholder="Твой ник" maxlength="40">
     </div>
 
     <div class="field">
@@ -727,7 +727,7 @@
   </div>
 </div>
 
-<footer>© 2024 Окрас. Сайт для любителей окрасов.</footer>
+<footer>© 2026 IR Repaints. Сайт для любителей окрасов.</footer>
 
 <script>
 const DEV_PASSWORD = 'dev2024';
@@ -759,7 +759,7 @@ function filterSkins() {
 function renderSkins(list) {
   const grid = document.getElementById('skins-grid');
   if (!list.length) {
-    grid.innerHTML = '<div class="empty-state"><div class="big">🎨</div><div>Ничего не найдено.<br><strong onclick="showPage(\'submit\')" style="color:var(--accent2);cursor:pointer">Добавь первый окрас!</strong></div></div>';
+    grid.innerHTML = '<div class="empty-state"><div class="big">🎨</div><div>Ничего не найдено.<br><strong onclick="showPage(\'submit\')" style="color:var(--accent2);cursor:pointer">Предложи первый окрас!</strong></div></div>';
     return;
   }
   const emojis = ['🚂','🚃','🚄','🚅','🚆','🚇','🚈','🚉','🚊','🚝'];
